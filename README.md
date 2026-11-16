@@ -1,3 +1,11 @@
+> **Este modelo mudou de casa.** Agora ele é a ferramenta `wortic pix` do projeto único
+> [developer-wortic/ferramentas-rust](https://github.com/developer-wortic/ferramentas-rust) (pasta `crates/pix`), com o
+> histórico deste repositório, um binário só para as quatro ferramentas e jsonW em tudo. Este repositório fica
+> arquivado, só para leitura.
+>
+> *This template moved to [developer-wortic/ferramentas-rust](https://github.com/developer-wortic/ferramentas-rust)
+> (`wortic pix`). This repository is archived.*
+
 # Pix estático em Rust: BR Code, QR Code e leitura do copia e cola
 
 <!-- GIF -->
