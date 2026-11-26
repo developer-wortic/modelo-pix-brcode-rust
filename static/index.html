@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pix com QR Code</title>
+<style>
+:root{--tinta:#1d1d1f;--suave:#6e6e73;--linha:#d2d2d7;--fina:#e8e8ed;--azul:#0071e3;--erro:#b3261e;--ok:#1a7f37;--campo:#f0f7ff}
+*{box-sizing:border-box}
+html{background:#fff}
+body{margin:0;background:#fff;color:var(--tinta);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+[hidden]{display:none !important}
+main{max-width:760px;margin:0 auto;padding:48px 20px 80px}
+h1{font-size:34px;line-height:1.1;letter-spacing:-.015em;margin:0 0 6px;font-weight:600}
+h2{font-size:20px;line-height:1.25;letter-spacing:-.01em;margin:0 0 4px;font-weight:600}
+.sub{color:var(--suave);margin:0 0 24px}
+.suave{color:var(--suave);font-size:14px;margin:0}
+.bloco{margin:20px 0 0;border:1px solid var(--fina);border-radius:18px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.04);min-width:0}
+label{display:block;font-size:13px;color:var(--suave);margin:16px 0 6px}
+.bloco>label:first-child,.bloco>form>label:first-child{margin-top:0}
+input,textarea{width:100%;padding:0 14px;border:1px solid var(--linha);border-radius:10px;font:inherit;color:inherit;background:#fff;min-width:0}
+input{height:46px}
+textarea{padding:12px 14px;min-height:96px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+input:focus,textarea:focus{outline:2px solid var(--azul);outline-offset:1px;border-color:transparent}
+textarea[readonly]{background:#fafafa}
+.linha{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.linha>div{min-width:0}
+button{height:46px;padding:0 20px;border:0;border-radius:10px;background:var(--azul);color:#fff;font:inherit;font-weight:500;cursor:pointer;white-space:nowrap}
+button.claro{background:#fff;color:var(--tinta);border:1px solid var(--linha)}
+button:disabled{opacity:.55}
+.fim{display:flex;gap:10px;margin-top:24px}
+#aviso{min-height:22px;margin:12px 0 0;font-size:14px;color:var(--suave)}
+#aviso.erro{color:var(--erro)}
+#aviso.ok{color:var(--ok)}
+a{color:var(--azul)}
+.resultado{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;align-items:start;margin-top:20px;padding-top:20px;border-top:1px solid var(--fina)}
+.resultado:empty{display:none}
+#qr{background:#fff;border:1px solid var(--fina);border-radius:14px;padding:12px}
+#qr svg{display:block;width:100%;height:auto}
+.codigo-titulo{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--suave);margin:0 0 6px}
+.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--azul);background:#e8f2fd;border-radius:6px;padding:2px 6px}
+.tag.cinza{color:var(--suave);background:#f5f5f7}
+.copia{margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.copia button{height:40px;font-size:15px}
+.copia small{color:var(--suave);font-size:13px}
+.campos{display:grid;grid-template-columns:minmax(120px,160px) minmax(0,1fr);gap:10px 20px;margin:16px 0 0}
+.campos dt{color:var(--suave);font-size:14px;padding-top:2px}
+.campos dd{margin:0;font-size:15px;word-break:break-word}
+.brutos{margin-top:16px;font-size:13px;color:var(--suave)}
+.brutos summary{cursor:pointer}
+.brutos ol{margin:8px 0 0;padding-left:20px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--tinta)}
+h2.secao{margin:36px 0 0;font-size:20px}
+.cartoes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.cartao{border:1px solid var(--fina);border-radius:14px;padding:18px;background:#fbfbfd;min-width:0}
+.cartao h3{font-size:16px;margin:0 0 6px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cartao p{margin:0;font-size:14px;color:var(--suave)}
+.cartao .aviso-pago{margin-top:12px;font-size:13px;background:#f5f5f7;border-radius:10px;padding:10px 12px}
+.cartao .aviso-pago a{font-weight:500}
+.estado{font-size:13px;color:var(--suave);margin:14px 0 0}
+.rodape{font-size:13px;color:var(--suave);margin:36px 0 0;padding-top:14px;border-top:1px solid var(--fina)}
+@media (max-width:560px){
+  main{padding:32px 16px 64px}
+  h1{font-size:30px}
+  .bloco{padding:18px}
+  .linha{grid-template-columns:minmax(0,1fr)}
+  .resultado{grid-template-columns:minmax(0,1fr);gap:16px}
+  #qr{max-width:280px}
+  .cartoes{grid-template-columns:minmax(0,1fr)}
+  .campos{grid-template-columns:minmax(0,1fr);gap:2px}
+  .campos dt{margin-top:10px}
+  button{width:100%}
+  .copia button{width:auto}
+  .fim{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>Pix com QR Code</h1>
+  <p class="sub">Monte o código de um Pix estático com a sua chave. Sai o QR Code e o copia e cola, sem banco, sem cobrança e sem enviar nada para fora.</p>
+
+  <section class="bloco" id="gerar" aria-label="Gerar o Pix">
+    <h2>Gerar o Pix</h2>
+    <form id="form">
+      <label for="chave">Chave Pix (CPF, CNPJ, e-mail, telefone com +55 ou chave aleatória)</label>
+      <input id="chave" autocomplete="off" placeholder="contato@exemplo.com.br">
+      <div class="linha">
+        <div><label for="nome">Nome do recebedor (até 25)</label><input id="nome" autocomplete="off" placeholder="LOJA EXEMPLO"></div>
+        <div><label for="cidade">Cidade (até 15)</label><input id="cidade" autocomplete="off" placeholder="SAO PAULO"></div>
+      </div>
+      <div class="linha">
+        <div><label for="valor">Valor (opcional, em reais)</label><input id="valor" inputmode="decimal" autocomplete="off" placeholder="10,50"></div>
+        <div><label for="txid">Txid (opcional, letras e números)</label><input id="txid" autocomplete="off" placeholder="PED42"></div>
+      </div>
+      <label for="descricao">Descrição (opcional, até 72)</label>
+      <input id="descricao" autocomplete="off" placeholder="Pedido 42">
+      <div class="fim"><button id="gerar" type="submit">Gerar QR Code</button></div>
+    </form>
+    <p id="aviso" aria-live="polite"></p>
+
+    <div id="resultado" class="resultado" hidden>
+      <div>
+        <div id="qr" aria-live="polite"></div>
+      </div>
+      <div>
+        <div class="codigo-titulo">
+          <span>Copia e cola</span>
+          <span class="tag cinza">Chave: <span id="tipo"></span></span>
+        </div>
+        <textarea id="codigo" readonly rows="4" aria-label="Código copia e cola do Pix"></textarea>
+        <div class="copia">
+          <button id="copiar" class="claro" type="button">Copiar código</button>
+          <small id="copiado" aria-live="polite"></small>
+        </div>
+        <p class="suave" style="margin-top:14px">Antes de divulgar, confira o nome e a chave. Quem paga vê o nome do recebedor no app do banco.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="ler" aria-label="Ler um copia e cola">
+    <h2>Ler um copia e cola</h2>
+    <p class="suave">Cole um código Pix e veja os campos. A leitura confere o CRC16 e não consulta nada.</p>
+    <label for="colado">Código copia e cola</label>
+    <textarea id="colado" rows="4" autocomplete="off" spellcheck="false" placeholder="000201..."></textarea>
+    <div class="fim"><button id="ler" class="claro" type="button">Ler código</button></div>
+    <p id="aviso-leitura" aria-live="polite" style="font-size:14px;min-height:22px;margin:12px 0 0;color:var(--suave)"></p>
+    <dl id="campos" class="campos"></dl>
+    <details id="brutos" class="brutos" hidden>
+      <summary>Campos do primeiro nível, como vieram</summary>
+      <ol id="lista-brutos"></ol>
+    </details>
+  </section>
+
+  <h2 class="secao" id="ganchos">Além do estático</h2>
+  <p class="suave">Estas funções não estão neste modelo. São da Wortic e são pagas. Aqui só aparece o aviso.</p>
+  <div class="cartoes">
+    <article class="cartao">
+      <h3>Confirmar pagamento automaticamente <span class="tag">Plano pago</span></h3>
+      <p>Saber sozinho quando o cliente pagou, sem olhar o extrato.</p>
+      <p class="aviso-pago">Não incluído neste modelo. <a href="https://wortic.com.br/planos">Ver planos</a></p>
+    </article>
+    <article class="cartao">
+      <h3>Pix dinâmico com vencimento <span class="tag">Plano pago</span></h3>
+      <p>Um Pix com valor fixo e data de vencimento, gerado na hora.</p>
+      <p class="aviso-pago">Não incluído neste modelo. <a href="https://wortic.com.br/planos">Ver planos</a></p>
+    </article>
+    <article class="cartao">
+      <h3>Conciliação <span class="tag">Plano pago</span></h3>
+      <p>Casar cada Pix recebido com o pedido ou a cobrança certa.</p>
+      <p class="aviso-pago">Não incluído neste modelo. <a href="https://wortic.com.br/planos">Ver planos</a></p>
+    </article>
+    <article class="cartao">
+      <h3>Checkout completo <span class="tag">Plano pago</span></h3>
+      <p>Página de pagamento com cartão e Pix, pedidos e recibos.</p>
+      <p class="aviso-pago">Não incluído neste modelo. <a href="https://wortic.com.br/planos">Ver planos</a></p>
+    </article>
+  </div>
+  <p id="estado-ganchos" class="estado"></p>
+
+  <p class="rodape">Feito com tecnologia Wortic (wortic.com.br). O código Pix é montado aqui, mas o dinheiro vai direto para a conta da chave, pelo app de quem paga.</p>
+</main>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var CAMPOS = ["chave", "nome", "cidade", "valor", "txid", "descricao"];
+
+  function aviso(el, texto, tipo) {
+    el.textContent = texto;
+    el.className = tipo || "";
+  }
+
+  function gerar() {
+    var params = new URLSearchParams();
+    CAMPOS.forEach(function (id) {
+      var v = $(id).value.trim();
+      if (v) params.set(id, v);
+    });
+    aviso($("aviso"), "Gerando...", "");
+    return fetch("/api/gerar?" + params.toString())
+      .then(function (r) {
+        return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+      })
+      .then(function (res) {
+        if (!res.ok) {
+          aviso($("aviso"), res.j.erro.mensagem, "erro");
+          $("resultado").hidden = true;
+          return;
+        }
+        $("qr").innerHTML = res.j.qr_svg;
+        $("codigo").value = res.j.codigo;
+        $("tipo").textContent = res.j.tipo_chave;
+        $("copiado").textContent = "";
+        $("resultado").hidden = false;
+        aviso($("aviso"), "Pronto. Confira o nome e a chave antes de divulgar.", "ok");
+      });
+  }
+
+  function copiar() {
+    var campo = $("codigo");
+    var marca = function () { $("copiado").textContent = "Copiado."; };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(campo.value).then(marca, function () {
+        campo.select();
+        document.execCommand("copy");
+        marca();
+      });
+    } else {
+      campo.select();
+      document.execCommand("copy");
+      marca();
+    }
+  }
+
+  function linhaCampo(rotulo, valor) {
+    var dt = document.createElement("dt");
+    dt.textContent = rotulo;
+    var dd = document.createElement("dd");
+    dd.textContent = valor === null || valor === undefined ? "não tem" : valor;
+    $("campos").appendChild(dt);
+    $("campos").appendChild(dd);
+  }
+
+  function ler() {
+    var codigo = $("colado").value.trim();
+    if (!codigo) {
+      aviso($("aviso-leitura"), "Cole um código antes.", "erro");
+      return Promise.resolve();
+    }
+    return fetch("/api/ler?codigo=" + encodeURIComponent(codigo))
+      .then(function (r) {
+        return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+      })
+      .then(function (res) {
+        var campos = $("campos");
+        campos.textContent = "";
+        $("lista-brutos").textContent = "";
+        $("brutos").hidden = true;
+        if (!res.ok) {
+          aviso($("aviso-leitura"), res.j.erro.mensagem, "erro");
+          return;
+        }
+        var j = res.j;
+        aviso($("aviso-leitura"), "Código lido. O CRC16 confere.", "ok");
+        linhaCampo("Chave", j.chave);
+        linhaCampo("Tipo de conta", "Pix estático (GUI br.gov.bcb.pix)");
+        linhaCampo("Descrição", j.descricao);
+        linhaCampo("Valor", j.valor === null ? "digitado por quem paga" : "R$ " + j.valor);
+        linhaCampo("Moeda", j.moeda === "986" ? "real (986)" : j.moeda);
+        linhaCampo("País", j.pais);
+        linhaCampo("Nome", j.nome);
+        linhaCampo("Cidade", j.cidade);
+        linhaCampo("Categoria", j.categoria);
+        linhaCampo("Txid", j.txid);
+        j.campos.forEach(function (c) {
+          var li = document.createElement("li");
+          li.textContent = c.id + " = " + c.valor;
+          $("lista-brutos").appendChild(li);
+        });
+        $("brutos").hidden = false;
+      });
+  }
+
+  $("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    gerar();
+  });
+  $("copiar").addEventListener("click", copiar);
+  $("ler").addEventListener("click", ler);
+
+  fetch("/api/config")
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      $("estado-ganchos").textContent = j.chave
+        ? "WORTIC_API_KEY encontrada. A rota destas funções ainda não existe na API pública da Wortic, então nada foi chamado."
+        : "Sem WORTIC_API_KEY, estas funções ficam só com o aviso.";
+    })
+    .catch(function () {
+      $("estado-ganchos").textContent = "";
+    });
+
+  // link pronto: ?chave=...&nome=...&cidade=...&valor=... gera na hora; ?codigo=... lê na hora
+  var q = new URLSearchParams(window.location.search);
+  CAMPOS.forEach(function (id) {
+    if (q.has(id)) $(id).value = q.get(id);
+  });
+  if (q.has("chave") && q.has("nome") && q.has("cidade")) gerar();
+  if (q.has("codigo")) {
+    $("colado").value = q.get("codigo");
+    ler();
+  }
+})();
+</script>
+</body>
+</html>

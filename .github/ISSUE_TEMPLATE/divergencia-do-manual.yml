@@ -1,0 +1,39 @@
+name: "Divergência do manual"
+description: "O código gerado não bate com o manual do Banco Central"
+title: "[manual] "
+labels: ["manual"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Esta é a issue mais importante do modelo. Se o código gerado não segue o manual do Banco Central, diga qual campo e qual trecho do manual.
+
+        Use dados de exemplo, nunca chave Pix real.
+  - type: input
+    id: secao
+    attributes:
+      label: Seção ou versão do manual
+      description: Nome do documento, versão e número da seção ou da tabela
+    validations:
+      required: true
+  - type: textarea
+    id: campo
+    attributes:
+      label: Campo e valor
+      description: Qual campo (por exemplo, 26, 62 ou 63) e o que o manual diz
+    validations:
+      required: true
+  - type: textarea
+    id: codigo
+    attributes:
+      label: Código gerado por este modelo
+      description: O copia e cola, com dados de exemplo
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacidade
+    attributes:
+      label: Confirmação
+      options:
+        - label: O código acima usa só dados de exemplo.
+          required: true

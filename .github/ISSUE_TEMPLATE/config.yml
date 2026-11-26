@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Manual de Padrões do Pix (Banco Central)
+    url: https://www.bcb.gov.br/estabilidadefinanceira/pix
+    about: Página oficial do Pix, com o manual do BR Code e as regras de iniciação.
+  - name: Planos da Wortic (funções pagas)
+    url: https://wortic.com.br/planos
+    about: Confirmação de pagamento, Pix dinâmico, conciliação e checkout completo não estão neste modelo.
+  - name: Segurança
+    url: https://github.com/developer-wortic/modelo-pix-brcode-rust/security/advisories/new
+    about: Falha de segurança entra por aqui, em privado. Veja o arquivo SECURITY.md.
